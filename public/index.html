@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Event Scout</title>
+<style>
+  :root {
+    --ink: #1a1d1f;
+    --paper: #fbfaf7;
+    --line: #e3ded4;
+    --accent: #2f5d50;
+    --accent-soft: #eef3f1;
+    --muted: #6b6f70;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  header {
+    padding: 32px clamp(20px, 5vw, 64px) 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin: 0; }
+  main { padding: 28px clamp(20px, 5vw, 64px) 64px; max-width: 1000px; margin: 0 auto; }
+  .status-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+  }
+  .status-text { font-size: 0.9rem; color: var(--muted); }
+  .status-text strong { color: var(--ink); }
+  button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  button:hover { opacity: 0.9; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .new-events {
+    border: 1px solid #d8c9a3;
+    background: #fdf8ec;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: none;
+  }
+  .new-events.visible { display: block; }
+  .new-events h2 { font-size: 1rem; margin: 0 0 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .empty { color: var(--muted); padding: 20px 0; text-align: center; }
+  section h2 { font-size: 1.05rem; margin: 0 0 12px; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Event Scout</h1>
+    <p class="subtitle">UK &amp; Europe events tracker — sports, festivals, holidays, and more</p>
+  </header>
+
+  <main>
+    <div class="status-bar">
+      <div class="status-text" id="statusText">Loading status…</div>
+      <button id="refreshBtn">Check for new events now</button>
+    </div>
+
+    <div class="new-events" id="newEventsBox">
+      <h2>New/changed events from the last check</h2>
+      <table id="newEventsTable">
+        <thead>
+          <tr><th>Event</th><th>Date(s)</th><th>Location</th><th>Notes</th><th>Source</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <section>
+      <h2>Currently tracked events (<span id="eventCount">0</span>)</h2>
+      <table id="eventsTable">
+        <thead>
+          <tr><th>Event</th><th>Date(s)</th><th>Location</th><th>Notes</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    const statusText = document.getElementById('statusText');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const eventsTableBody = document.querySelector('#eventsTable tbody');
+    const eventCount = document.getElementById('eventCount');
+    const newEventsBox = document.getElementById('newEventsBox');
+    const newEventsTableBody = document.querySelector('#newEventsTable tbody');
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str ?? '';
+      return div.innerHTML;
+    }
+
+    function renderEvents(events) {
+      eventCount.textContent = events.length;
+      eventsTableBody.innerHTML = events.length
+        ? events
+            .map(
+              (e) => `<tr>
+                <td>${esc(e.name)}</td>
+                <td>${esc(e.dates)}</td>
+                <td>${esc(e.locations)}</td>
+                <td>${esc(e.notes)}</td>
+              </tr>`
+            )
+            .join('')
+        : '';
+    }
+
+    function renderLastRun(lastRun) {
+      if (!lastRun) {
+        statusText.innerHTML = '<strong>No checks run yet.</strong> Click the button to run the first check.';
+        return;
+      }
+      const when = new Date(lastRun.ranAt).toLocaleString('en-GB', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+      statusText.innerHTML = `Last checked <strong>${when}</strong> — found <strong>${lastRun.newEventsFound}</strong> new/changed event(s).`;
+
+      if (lastRun.newEventsFound > 0) {
+        newEventsBox.classList.add('visible');
+        newEventsTableBody.innerHTML = lastRun.newEvents
+          .map(
+            (e) => `<tr>
+              <td>${esc(e.name)}</td>
+              <td>${esc(e.dates)}</td>
+              <td>${esc(e.locations)}</td>
+              <td>${esc(e.notes)}</td>
+              <td>${e.source ? `<a href="${esc(e.source)}" target="_blank" rel="noopener">source</a>` : ''}</td>
+            </tr>`
+          )
+          .join('');
+      } else {
+        newEventsBox.classList.remove('visible');
+      }
+    }
+
+    async function loadStatus() {
+      const res = await fetch('/.netlify/functions/get-status');
+      const data = await res.json();
+      renderEvents(data.knownEvents || []);
+      renderLastRun(data.lastRun);
+    }
+
+    refreshBtn.addEventListener('click', async () => {
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = 'Checking… this can take a minute';
+      statusText.textContent = 'Searching the web for new events…';
+      try {
+        const res = await fetch('/.netlify/functions/check-events-manual', { method: 'POST' });
+        if (!res.ok) throw new Error((await res.json()).error || 'Check failed');
+        await loadStatus();
+      } catch (err) {
+        statusText.textContent = `Error: ${err.message}`;
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = 'Check for new events now';
+      }
+    });
+
+    loadStatus();
+  </script>
+</body>
+</html>

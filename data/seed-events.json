@@ -1,0 +1,356 @@
+[
+  {
+    "name": "Sziget Music Fest",
+    "notes": "",
+    "dates": "11/08/2026 - 15/08/2026",
+    "locations": "Budapest"
+  },
+  {
+    "name": "UK Bank Holiday",
+    "notes": "",
+    "dates": "03/04/2026 - 06/04/2026, 01/05/2026 - 04/05/2026, 22/05/2026 - 25/05/2026, 28/08/2026 - 31/08/2026, 26/03/2027 - 29/03/2027, 30/04/2027 - 03/05/2027, 28/05/2027 - 31/05/2027, 27/08/2027 - 30/08/2027",
+    "locations": ""
+  },
+  {
+    "name": "Manchester Pride",
+    "notes": "",
+    "dates": "28/08/2026 - 30/08/2026, 28/08/2027 - 31/08/2027",
+    "locations": "Manchester"
+  },
+  {
+    "name": "Parklife Music Festival",
+    "notes": "",
+    "dates": "19/06/2026 - 21/06/2026, 09/07/2027 - 11/07/2027",
+    "locations": "Manchester"
+  },
+  {
+    "name": "Manchester Marathon",
+    "notes": "",
+    "dates": "17/04/2026 - 20/04/2026, 16/04/2027 - 18/04/2027",
+    "locations": "Manchester"
+  },
+  {
+    "name": "Great North Run",
+    "notes": "",
+    "dates": "11/09/2026 - 13/09/2026",
+    "locations": "Newcastle"
+  },
+  {
+    "name": "Oktoberfest",
+    "notes": "",
+    "dates": "19/09/2026 - 04/10/2026, 18/09/2027 - 03/10/2027",
+    "locations": "Munich,\nHamburg"
+  },
+  {
+    "name": "Edinburgh Fringe Festival",
+    "notes": "",
+    "dates": "01/08/2025 - 31/08/2025, 07/08/2026 - 31/08/2026",
+    "locations": "Edinburgh"
+  },
+  {
+    "name": "Liverpool Home Game",
+    "notes": "Games can be moved dates due TV rights",
+    "dates": "31/08/2025 - 31/08/2025, 20/09/2025 - 20/09/2025, 19/10/2025 - 19/10/2025, 01/11/2025 - 01/11/2025, 22/11/2025 - 22/11/2025, 03/12/2025 - 03/12/2025, 13/12/2025 - 13/12/2025, 27/12/2025 - 27/12/2025, 30/12/2025 - 30/12/2025, 17/01/2026 - 17/01/2026, 31/01/2026 - 31/01/2026, 07/02/2026 - 07/02/2026, 28/02/2026 - 28/02/2026, 14/03/2026 - 14/03/2026, 11/04/2026 - 11/04/2026, 09/05/2026 - 09/05/2026, 24/05/2026 - 24/05/2026",
+    "locations": "Liverpool"
+  },
+  {
+    "name": "Cologne Xmas Market",
+    "notes": "",
+    "dates": "27/11/2026 - 24/12/2026, 26/11/2027 - 24/12/2027",
+    "locations": "Cologne"
+  },
+  {
+    "name": "Pentecost",
+    "notes": "",
+    "dates": "24/05/2026 - 25/05/2026, 14/05/2027 - 16/05/2027",
+    "locations": "Hamburg"
+  },
+  {
+    "name": "Brighton Pride",
+    "notes": "",
+    "dates": "01/08/2025 - 04/08/2025, 31/07/2026 - 03/08/2026",
+    "locations": "Brighton"
+  },
+  {
+    "name": "Ice Hockey Play Off Final",
+    "notes": "",
+    "dates": "17/04/2026 - 19/04/2026",
+    "locations": "Nottingham"
+  },
+  {
+    "name": "Gay Pride Weekend",
+    "notes": "",
+    "dates": "01/08/2025 - 03/08/2025, 25/07/2026 - 08/08/2026",
+    "locations": "Amsterdam"
+  },
+  {
+    "name": "Labour Weekend",
+    "notes": "",
+    "dates": "30/04/2026 - 04/05/2026, 30/04/2027 - 03/05/2027",
+    "locations": "Budapest"
+  },
+  {
+    "name": "Grand National",
+    "notes": "",
+    "dates": "09/04/2026 - 11/04/2026, 08/04/2027 - 11/04/2027",
+    "locations": "Liverpool,\nBenidorm"
+  },
+  {
+    "name": "Six Nations 2026",
+    "notes": "",
+    "dates": "06/02/2026 - 08/02/2026, 20/02/2026 - 22/02/2026",
+    "locations": "London"
+  },
+  {
+    "name": "Six Nations 2026",
+    "notes": "",
+    "dates": "13/02/2026 - 15/02/2026, 06/03/2026 - 08/03/2026, 13/03/2026 - 15/03/2026",
+    "locations": "Dublin"
+  },
+  {
+    "name": "Six Nations 2026",
+    "notes": "",
+    "dates": "13/02/2026 - 15/02/2026, 06/03/2026 - 08/03/2026",
+    "locations": "Edinburgh"
+  },
+  {
+    "name": "Six Nations 2026",
+    "notes": "",
+    "dates": "13/02/2026 - 15/02/2026, 20/02/2026 - 22/02/2026, 13/03/2026 - 15/03/2026",
+    "locations": "Cardiff"
+  },
+  {
+    "name": "Kings Day",
+    "notes": "",
+    "dates": "27/04/2026 - 27/04/2026, 27/04/2027 - 27/04/2027",
+    "locations": "Amsterdam"
+  },
+  {
+    "name": "Champions League Final",
+    "notes": "",
+    "dates": "28/05/2026 - 31/05/2026",
+    "locations": "Budapest"
+  },
+  {
+    "name": "Metallica World Tour",
+    "notes": "",
+    "dates": "11/06/2026 - 13/06/2026",
+    "locations": "Budapest"
+  },
+  {
+    "name": "Hamburg Marathon",
+    "notes": "",
+    "dates": "24/04/2026 - 26/04/2026",
+    "locations": "Hamburg"
+  },
+  {
+    "name": "World Figure Skating Championships",
+    "notes": "",
+    "dates": "24/03/2026 - 29/03/2026",
+    "locations": "Prague"
+  },
+  {
+    "name": "Jason Derulo Concert",
+    "notes": "",
+    "dates": "02/03/2026 - 02/03/2026",
+    "locations": "Prague"
+  },
+  {
+    "name": "Jason Derulo Concert",
+    "notes": "",
+    "dates": "02/03/2026 - 02/03/2026",
+    "locations": "Prague"
+  },
+  {
+    "name": "Billy Joel Concert",
+    "notes": "",
+    "dates": "20/06/2026 - 20/06/2026",
+    "locations": "Liverpool"
+  },
+  {
+    "name": "Golf - The Open",
+    "notes": "",
+    "dates": "12/07/2026 - 19/07/2026",
+    "locations": "Liverpool"
+  },
+  {
+    "name": "Labour Conference",
+    "notes": "",
+    "dates": "27/09/2026 - 02/10/2026",
+    "locations": "Liverpool"
+  },
+  {
+    "name": "Country to Country music festival",
+    "notes": "",
+    "dates": "13/03/2026 - 15/03/2026",
+    "locations": "Belfast"
+  },
+  {
+    "name": "European Athletics Championships",
+    "notes": "",
+    "dates": "10/08/2026 - 16/08/2026",
+    "locations": "Birmingham"
+  },
+  {
+    "name": "Cheltenham Gold Cup",
+    "notes": "",
+    "dates": "10/03/2026 - 13/03/2026",
+    "locations": "Cheltenham,\nBenidorm"
+  },
+  {
+    "name": "St Patricks Festival",
+    "notes": "",
+    "dates": "14/03/2026 - 17/03/2026",
+    "locations": "Dublin"
+  },
+  {
+    "name": "Metallica World Tour",
+    "notes": "",
+    "dates": "28/06/2026 - 28/06/2026",
+    "locations": "Cardiff"
+  },
+  {
+    "name": "Metallica World Tour",
+    "notes": "",
+    "dates": "19/06/2026 - 21/06/2026",
+    "locations": "Dublin"
+  },
+  {
+    "name": "Commonwealth Games",
+    "notes": "",
+    "dates": "23/07/2026 - 02/08/2026",
+    "locations": "Glasgow"
+  },
+  {
+    "name": "Barcelona F1 Weekend",
+    "notes": "",
+    "dates": "12/06/2026 - 14/06/2026",
+    "locations": "Barcelona"
+  },
+  {
+    "name": "Budapest F1 Weekend",
+    "notes": "",
+    "dates": "24/07/2026 - 26/07/2026",
+    "locations": "Budapest"
+  },
+  {
+    "name": "Dutch F1 Grand Prix",
+    "notes": "",
+    "dates": "21/08/2026 - 23/08/2026",
+    "locations": "Amsterdam"
+  },
+  {
+    "name": "Madrid F1 Weekend",
+    "notes": "",
+    "dates": "11/09/2026 - 13/09/2026",
+    "locations": "Madrid"
+  },
+  {
+    "name": "Test Match Cricket",
+    "notes": "",
+    "dates": "26/06/2026 - 27/06/2026",
+    "locations": "Nottingham"
+  },
+  {
+    "name": "Royal Highland Show",
+    "notes": "The Royal Highland Show is an annual event, showcasing the best of food, farming and rural life at Ingliston in Edinburgh.",
+    "dates": "18/06/2026 - 21/06/2026",
+    "locations": "Edinburgh"
+  },
+  {
+    "name": "World Cup 2026",
+    "notes": "",
+    "dates": "11/06/2026 - 19/07/2026",
+    "locations": ""
+  },
+  {
+    "name": "Sonar Festival",
+    "notes": "",
+    "dates": "18/06/2026 - 20/06/2026",
+    "locations": "Barcelona"
+  },
+  {
+    "name": "Radio 1\u2019s Big Weekend @ Herrington Park",
+    "notes": "Based in Sunderland",
+    "dates": "22/05/2026 - 24/05/2026",
+    "locations": "Newcastle"
+  },
+  {
+    "name": "Amsterdam Dance Event",
+    "notes": "The Amsterdam Dance Event is a five-day electronic music conference and festival held annually in mid-October.",
+    "dates": "21/10/2026 - 25/10/2026",
+    "locations": "Amsterdam"
+  },
+  {
+    "name": "Brighton Marathon",
+    "notes": "",
+    "dates": "10/04/2026 - 12/04/2026",
+    "locations": "Brighton"
+  },
+  {
+    "name": "Rebellion Festival",
+    "notes": "",
+    "dates": "07/08/2026 - 09/08/2026",
+    "locations": "Blackpool"
+  },
+  {
+    "name": "Boardmasters Festival 2026",
+    "notes": "",
+    "dates": "05/08/2026 - 09/08/2026",
+    "locations": "Newquay"
+  },
+  {
+    "name": "Autumn Rugby Internationals 2026 - FINALS WEEKEND",
+    "notes": "",
+    "dates": "27/11/2026 - 29/11/2026",
+    "locations": "Northern Ireland,\nIreland,\nWales,\nUK,\nScotland"
+  },
+  {
+    "name": "Autumn Rugby Internationals 2026 - Round 6",
+    "notes": "",
+    "dates": "21/11/2026 - 21/11/2026",
+    "locations": "Ireland,\nNorthern Ireland,\nUK,\nScotland,\nWales"
+  },
+  {
+    "name": "Autumn Rugby Internationals 2026 - Round 5",
+    "notes": "",
+    "dates": "13/11/2026 - 15/11/2026",
+    "locations": "Ireland,\nNorthern Ireland,\nWales,\nUK,\nScotland"
+  },
+  {
+    "name": "Autumn Rugby Internationals 2026 - Round 4",
+    "notes": "",
+    "dates": "06/11/2026 - 08/11/2026",
+    "locations": "UK,\nIreland,\nNorthern Ireland,\nWales,\nScotland"
+  },
+  {
+    "name": "Foo Fighters Concert",
+    "notes": "",
+    "dates": "26/06/2026 - 28/06/2026",
+    "locations": "Liverpool"
+  },
+  {
+    "name": "Berlin Marathon",
+    "notes": "",
+    "dates": "25/09/2026 - 27/09/2026",
+    "locations": "Berlin"
+  },
+  {
+    "name": "Lisbon Marathon",
+    "notes": "",
+    "dates": "09/10/2026 - 11/10/2026",
+    "locations": "Lisbon"
+  },
+  {
+    "name": "World Athletics Ultimate Championship",
+    "notes": "",
+    "dates": "11/09/2026 - 13/09/2026",
+    "locations": "Budapest"
+  },
+  {
+    "name": "Benidorm Fiesta",
+    "notes": "",
+    "dates": "06/11/2026 - 12/11/2026",
+    "locations": "Benidorm"
+  }
+]

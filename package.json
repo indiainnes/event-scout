@@ -1,0 +1,10 @@
+{
+  "name": "event-scout",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fortnightly UK/Europe events scout with email alerts",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "@netlify/functions": "^2.8.1"
+  }
+}
