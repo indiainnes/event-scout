@@ -189,3 +189,5 @@ async function runCheck() {
   await saveLastRun(runMeta);
   return runMeta;
 }
+
+module.exports = { runCheck, getKnownEvents, getLastRun };
