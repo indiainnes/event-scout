@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Event Scout</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
     --ink: #1a1d1f;
@@ -30,7 +31,7 @@
     letter-spacing: -0.01em;
   }
   .subtitle { color: var(--muted); font-size: 0.95rem; margin: 0; }
-  main { padding: 28px clamp(20px, 5vw, 64px) 64px; max-width: 1000px; margin: 0 auto; }
+  main { padding: 28px clamp(20px, 5vw, 64px) 64px; max-width: 1100px; margin: 0 auto; }
   .status-bar {
     display: flex;
     flex-wrap: wrap;
@@ -59,6 +60,11 @@
   button:hover { opacity: 0.9; }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.secondary {
+    background: white;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
   .new-events {
     border: 1px solid #d8c9a3;
     background: #fdf8ec;
@@ -68,7 +74,15 @@
     display: none;
   }
   .new-events.visible { display: block; }
-  .new-events h2 { font-size: 1rem; margin: 0 0 10px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .section-head h2 { margin: 0; font-size: 1rem; }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -85,8 +99,12 @@
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
   }
-  .empty { color: var(--muted); padding: 20px 0; text-align: center; }
+  th:hover { color: var(--ink); }
+  th .arrow { font-size: 0.7rem; margin-left: 4px; opacity: 0.6; }
   section h2 { font-size: 1.05rem; margin: 0 0 12px; }
 </style>
 </head>
@@ -103,20 +121,38 @@
     </div>
 
     <div class="new-events" id="newEventsBox">
-      <h2>New/changed events from the last check</h2>
+      <div class="section-head">
+        <h2>New/changed events from the last check</h2>
+        <button class="secondary" id="downloadNewBtn">Download as Excel</button>
+      </div>
       <table id="newEventsTable">
         <thead>
-          <tr><th>Event</th><th>Date(s)</th><th>Location</th><th>Notes</th><th>Source</th></tr>
+          <tr>
+            <th data-key="name">Event <span class="arrow"></span></th>
+            <th data-key="dates">Date(s) <span class="arrow"></span></th>
+            <th data-key="locations">Location <span class="arrow"></span></th>
+            <th data-key="notes">Notes <span class="arrow"></span></th>
+            <th data-key="source">Source <span class="arrow"></span></th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
 
     <section>
-      <h2>Currently tracked events (<span id="eventCount">0</span>)</h2>
+      <div class="section-head">
+        <h2>Currently tracked events (<span id="eventCount">0</span>)</h2>
+        <button class="secondary" id="downloadAllBtn">Download as Excel</button>
+      </div>
       <table id="eventsTable">
         <thead>
-          <tr><th>Event</th><th>Date(s)</th><th>Location</th><th>Notes</th></tr>
+          <tr>
+            <th data-key="name">Event <span class="arrow"></span></th>
+            <th data-key="dates">Date(s) <span class="arrow"></span></th>
+            <th data-key="locations">Location <span class="arrow"></span></th>
+            <th data-key="notes">Notes <span class="arrow"></span></th>
+            <th data-key="foundAt">Date added <span class="arrow"></span></th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -131,101 +167,15 @@
     const newEventsBox = document.getElementById('newEventsBox');
     const newEventsTableBody = document.querySelector('#newEventsTable tbody');
 
+    let allEvents = [];
+    let newEvents = [];
+    const sortState = { events: { key: null, dir: 1 }, newEvents: { key: null, dir: 1 } };
+
     function esc(str) {
       const div = document.createElement('div');
       div.textContent = str ?? '';
       return div.innerHTML;
     }
 
-    function renderEvents(events) {
-      eventCount.textContent = events.length;
-      eventsTableBody.innerHTML = events.length
-        ? events
-            .map(
-              (e) => `<tr>
-                <td>${esc(e.name)}</td>
-                <td>${esc(e.dates)}</td>
-                <td>${esc(e.locations)}</td>
-                <td>${esc(e.notes)}</td>
-              </tr>`
-            )
-            .join('')
-        : '';
-    }
-
-    function renderLastRun(lastRun) {
-      if (!lastRun) {
-        statusText.innerHTML = '<strong>No checks run yet.</strong> Click the button to run the first check.';
-        return;
-      }
-      const when = new Date(lastRun.ranAt).toLocaleString('en-GB', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-      statusText.innerHTML = `Last checked <strong>${when}</strong> — found <strong>${lastRun.newEventsFound}</strong> new/changed event(s).`;
-
-      if (lastRun.newEventsFound > 0) {
-        newEventsBox.classList.add('visible');
-        newEventsTableBody.innerHTML = lastRun.newEvents
-          .map(
-            (e) => `<tr>
-              <td>${esc(e.name)}</td>
-              <td>${esc(e.dates)}</td>
-              <td>${esc(e.locations)}</td>
-              <td>${esc(e.notes)}</td>
-              <td>${e.source ? `<a href="${esc(e.source)}" target="_blank" rel="noopener">source</a>` : ''}</td>
-            </tr>`
-          )
-          .join('');
-      } else {
-        newEventsBox.classList.remove('visible');
-      }
-    }
-
-    async function loadStatus() {
-      const res = await fetch('/.netlify/functions/get-status');
-      const data = await res.json();
-      renderEvents(data.knownEvents || []);
-      renderLastRun(data.lastRun);
-      return data.lastRun ? data.lastRun.ranAt : null;
-    }
-
-    function sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    refreshBtn.addEventListener('click', async () => {
-      refreshBtn.disabled = true;
-      refreshBtn.textContent = 'Checking… this can take a minute or two';
-      statusText.textContent = 'Searching the web for new events…';
-
-      const previousRanAt = await loadStatus().catch(() => null);
-
-      try {
-        // Kick off the background check. We don't wait for its response —
-        // it runs for longer than a normal request allows.
-        fetch('/.netlify/functions/check-events-manual-background', { method: 'POST' }).catch(() => {});
-
-        // Poll for completion: check every 5 seconds, for up to 3 minutes.
-        const maxAttempts = 36;
-        for (let attempt = 0; attempt < maxAttempts; attempt++) {
-          await sleep(5000);
-          const latestRanAt = await loadStatus();
-          if (latestRanAt && latestRanAt !== previousRanAt) {
-            return; // done — loadStatus() already updated the page
-          }
-        }
-        statusText.textContent =
-          'Still running longer than expected — refresh the page in a minute to check for results.';
-      } catch (err) {
-        statusText.textContent = `Error: ${err.message}`;
-      } finally {
-        refreshBtn.disabled = false;
-        refreshBtn.textContent = 'Check for new events now';
-      }
-    });
-
-    loadStatus();
-  </script>
-</body>
-</html>
+    function formatDateAdded(value) {
+      if (!value) return 'Original list';
