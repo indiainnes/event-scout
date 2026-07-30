@@ -9,6 +9,8 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TEAM_EMAIL = process.env.TEAM_EMAIL; // comma-separated list of recipients
 const FROM_EMAIL = process.env.FROM_EMAIL || 'events@yourcompany.com';
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5';
+const NETLIFY_SITE_ID = process.env.NETLIFY_SITE_ID;
+const NETLIFY_BLOBS_TOKEN = process.env.NETLIFY_BLOBS_TOKEN;
 
 // Edit this to match what your team actually tracks.
 const SEARCH_SCOPE = `major sporting events, music festivals, public/bank holidays,
@@ -16,6 +18,13 @@ cultural festivals, and other large public events taking place across the UK and
 over the next 12 months`;
 
 function eventsStore() {
+  if (NETLIFY_SITE_ID && NETLIFY_BLOBS_TOKEN) {
+    return getStore({
+      name: 'event-calendar',
+      siteID: NETLIFY_SITE_ID,
+      token: NETLIFY_BLOBS_TOKEN,
+    });
+  }
   return getStore('event-calendar');
 }
 
