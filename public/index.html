@@ -179,3 +179,185 @@
 
     function formatDateAdded(value) {
       if (!value) return 'Original list';
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return 'Original list';
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function sortRows(rows, key, dir) {
+      return [...rows].sort((a, b) => {
+        let av = a[key] ?? '';
+        let bv = b[key] ?? '';
+        if (key === 'foundAt') {
+          av = av ? new Date(av).getTime() : 0;
+          bv = bv ? new Date(bv).getTime() : 0;
+        } else {
+          av = String(av).toLowerCase();
+          bv = String(bv).toLowerCase();
+        }
+        if (av < bv) return -1 * dir;
+        if (av > bv) return 1 * dir;
+        return 0;
+      });
+    }
+
+    function updateArrows(tableId, activeKey, dir) {
+      document.querySelectorAll('#' + tableId + ' th[data-key]').forEach((th) => {
+        const arrow = th.querySelector('.arrow');
+        arrow.textContent = th.dataset.key === activeKey ? (dir === 1 ? '▲' : '▼') : '';
+      });
+    }
+
+    function renderEvents() {
+      const state = sortState.events;
+      const rows = state.key ? sortRows(allEvents, state.key, state.dir) : allEvents;
+      eventCount.textContent = allEvents.length;
+      eventsTableBody.innerHTML = rows
+        .map(
+          (e) => '<tr>' +
+            '<td>' + esc(e.name) + '</td>' +
+            '<td>' + esc(e.dates) + '</td>' +
+            '<td>' + esc(e.locations) + '</td>' +
+            '<td>' + esc(e.notes) + '</td>' +
+            '<td>' + esc(formatDateAdded(e.foundAt)) + '</td>' +
+          '</tr>'
+        )
+        .join('');
+      updateArrows('eventsTable', state.key, state.dir);
+    }
+
+    function renderNewEvents() {
+      const state = sortState.newEvents;
+      const rows = state.key ? sortRows(newEvents, state.key, state.dir) : newEvents;
+      newEventsTableBody.innerHTML = rows
+        .map(
+          (e) => '<tr>' +
+            '<td>' + esc(e.name) + '</td>' +
+            '<td>' + esc(e.dates) + '</td>' +
+            '<td>' + esc(e.locations) + '</td>' +
+            '<td>' + esc(e.notes) + '</td>' +
+            '<td>' + (e.source ? '<a href="' + esc(e.source) + '" target="_blank" rel="noopener">source</a>' : '') + '</td>' +
+          '</tr>'
+        )
+        .join('');
+      updateArrows('newEventsTable', state.key, state.dir);
+      newEventsBox.classList.toggle('visible', newEvents.length > 0);
+    }
+
+    function attachSorting(tableId, state, renderFn) {
+      document.querySelectorAll('#' + tableId + ' th[data-key]').forEach((th) => {
+        th.addEventListener('click', () => {
+          const key = th.dataset.key;
+          if (state.key === key) {
+            state.dir *= -1;
+          } else {
+            state.key = key;
+            state.dir = 1;
+          }
+          renderFn();
+        });
+      });
+    }
+
+    function downloadExcel(rows, columns, filename) {
+      const data = rows.map((row) => {
+        const out = {};
+        columns.forEach(({ key, label }) => {
+          out[label] = key === 'foundAt' ? formatDateAdded(row[key]) : (row[key] || '');
+        });
+        return out;
+      });
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Events');
+      XLSX.writeFile(workbook, filename);
+    }
+
+    async function loadStatus() {
+      const res = await fetch('/.netlify/functions/get-status');
+      const data = await res.json();
+      allEvents = data.knownEvents || [];
+      newEvents = (data.lastRun && data.lastRun.newEvents) || [];
+      renderEvents();
+      renderNewEvents();
+
+      if (!data.lastRun) {
+        statusText.innerHTML = '<strong>No checks run yet.</strong> Click the button to run the first check.';
+      } else {
+        const when = new Date(data.lastRun.ranAt).toLocaleString('en-GB', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        });
+        statusText.innerHTML = 'Last checked <strong>' + when + '</strong> — found <strong>' + data.lastRun.newEventsFound + '</strong> new/changed event(s).';
+      }
+
+      return data.lastRun ? data.lastRun.ranAt : null;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    refreshBtn.addEventListener('click', async () => {
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = 'Checking… this can take a minute or two';
+      statusText.textContent = 'Searching the web for new events…';
+
+      const previousRanAt = await loadStatus().catch(() => null);
+
+      try {
+        fetch('/.netlify/functions/check-events-manual-background', { method: 'POST' }).catch(() => {});
+
+        const maxAttempts = 36;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          await sleep(5000);
+          const latestRanAt = await loadStatus();
+          if (latestRanAt && latestRanAt !== previousRanAt) {
+            return;
+          }
+        }
+        statusText.textContent =
+          'Still running longer than expected — refresh the page in a minute to check for results.';
+      } catch (err) {
+        statusText.textContent = 'Error: ' + err.message;
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = 'Check for new events now';
+      }
+    });
+
+    document.getElementById('downloadAllBtn').addEventListener('click', () => {
+      downloadExcel(
+        allEvents,
+        [
+          { key: 'name', label: 'Event' },
+          { key: 'dates', label: 'Date(s)' },
+          { key: 'locations', label: 'Location' },
+          { key: 'notes', label: 'Notes' },
+          { key: 'foundAt', label: 'Date added' },
+        ],
+        'tracked-events.xlsx'
+      );
+    });
+
+    document.getElementById('downloadNewBtn').addEventListener('click', () => {
+      downloadExcel(
+        newEvents,
+        [
+          { key: 'name', label: 'Event' },
+          { key: 'dates', label: 'Date(s)' },
+          { key: 'locations', label: 'Location' },
+          { key: 'notes', label: 'Notes' },
+          { key: 'source', label: 'Source' },
+        ],
+        'new-events.xlsx'
+      );
+    });
+
+    attachSorting('eventsTable', sortState.events, renderEvents);
+    attachSorting('newEventsTable', sortState.newEvents, renderNewEvents);
+
+    loadStatus();
+  </script>
+</body>
+</html>
