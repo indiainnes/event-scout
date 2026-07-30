@@ -169,7 +169,9 @@ async function sendAlertEmail(newEvents) {
 
 async function runCheck() {
   const known = await getKnownEvents();
-  const newEvents = await callClaude(known);
+  const newEventsRaw = await callClaude(known);
+  const ranAt = new Date().toISOString();
+  const newEvents = newEventsRaw.map((e) => ({ ...e, foundAt: ranAt }));
 
   let emailResult = { sent: false, reason: 'no new events' };
   if (newEvents.length > 0) {
@@ -179,7 +181,7 @@ async function runCheck() {
   }
 
   const runMeta = {
-    ranAt: new Date().toISOString(),
+    ranAt,
     newEventsFound: newEvents.length,
     newEvents,
     emailResult,
@@ -187,5 +189,3 @@ async function runCheck() {
   await saveLastRun(runMeta);
   return runMeta;
 }
-
-module.exports = { runCheck, getKnownEvents, getLastRun };
