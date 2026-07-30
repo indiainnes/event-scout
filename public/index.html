@@ -187,16 +187,36 @@
       const data = await res.json();
       renderEvents(data.knownEvents || []);
       renderLastRun(data.lastRun);
+      return data.lastRun ? data.lastRun.ranAt : null;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     refreshBtn.addEventListener('click', async () => {
       refreshBtn.disabled = true;
-      refreshBtn.textContent = 'Checking… this can take a minute';
+      refreshBtn.textContent = 'Checking… this can take a minute or two';
       statusText.textContent = 'Searching the web for new events…';
+
+      const previousRanAt = await loadStatus().catch(() => null);
+
       try {
-        const res = await fetch('/.netlify/functions/check-events-manual', { method: 'POST' });
-        if (!res.ok) throw new Error((await res.json()).error || 'Check failed');
-        await loadStatus();
+        // Kick off the background check. We don't wait for its response —
+        // it runs for longer than a normal request allows.
+        fetch('/.netlify/functions/check-events-manual-background', { method: 'POST' }).catch(() => {});
+
+        // Poll for completion: check every 5 seconds, for up to 3 minutes.
+        const maxAttempts = 36;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          await sleep(5000);
+          const latestRanAt = await loadStatus();
+          if (latestRanAt && latestRanAt !== previousRanAt) {
+            return; // done — loadStatus() already updated the page
+          }
+        }
+        statusText.textContent =
+          'Still running longer than expected — refresh the page in a minute to check for results.';
       } catch (err) {
         statusText.textContent = `Error: ${err.message}`;
       } finally {
