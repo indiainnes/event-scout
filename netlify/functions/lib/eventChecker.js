@@ -14,7 +14,8 @@ const NETLIFY_BLOBS_TOKEN = process.env.NETLIFY_BLOBS_TOKEN;
 
 // Edit this to match what your team actually tracks.
 const SEARCH_SCOPE = `major sporting events, music festivals, public/bank holidays,
-cultural festivals, and other large public events taking place across the UK and Europe
+cultural festivals, political party conferences (UK party conference season, EU/European
+party events), and other large public events taking place across the UK and Europe
 over the next 12 months`;
 
 function eventsStore() {
